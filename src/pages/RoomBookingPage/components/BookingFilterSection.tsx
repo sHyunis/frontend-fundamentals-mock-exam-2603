@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { Suspense } from 'react';
-import { useFormContext, useWatch, Controller } from 'react-hook-form';
+import { useFormContext, Controller, type PathValue, type Path } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -16,8 +16,7 @@ import { useFilterErrors } from '../hooks/useFilterErrors';
 import type { BookingFormData } from '../types';
 
 export function BookingFilterSection() {
-  const { register, control, setValue, clearErrors } = useFormContext<BookingFormData>();
-  const values = useWatch({ control }) as BookingFormData;
+  const { register, control, setValue, getValues, clearErrors } = useFormContext<BookingFormData>();
   const syncSearchParams = useSearchParamsSync();
   const filterErrors = useFilterErrors();
 
@@ -26,10 +25,14 @@ export function BookingFilterSection() {
     clearErrors('root');
   };
 
-  const handleControllerChange = <K extends keyof BookingFormData>(key: K, value: BookingFormData[K]) => {
-    setValue(key, value as never);
+  const syncCurrentParams = () => {
+    syncSearchParams(getValues());
+  };
+
+  const handleControllerChange = <K extends Path<BookingFormData>>(key: K, newValue: PathValue<BookingFormData, K>) => {
+    setValue(key, newValue);
     handleFieldChange();
-    syncSearchParams({ ...values, [key]: value });
+    syncSearchParams({ ...getValues(), [key]: newValue });
   };
 
   return (
@@ -42,9 +45,9 @@ export function BookingFilterSection() {
       <DatePicker
         label="날짜"
         {...register('date', {
-          onChange: (e) => {
+          onChange: () => {
             handleFieldChange();
-            syncSearchParams({ ...values, date: e.target.value });
+            syncCurrentParams();
           },
         })}
         min={dayjs().format('YYYY-MM-DD')}
@@ -63,7 +66,7 @@ export function BookingFilterSection() {
               onChange={(e) => {
                 field.onChange(e.target.value);
                 handleFieldChange();
-                syncSearchParams({ ...values, start: e.target.value });
+                syncSearchParams({ ...getValues(), start: e.target.value });
               }}
             />
           )}
@@ -79,7 +82,7 @@ export function BookingFilterSection() {
               onChange={(e) => {
                 field.onChange(e.target.value);
                 handleFieldChange();
-                syncSearchParams({ ...values, end: e.target.value });
+                syncSearchParams({ ...getValues(), end: e.target.value });
               }}
             />
           )}
@@ -101,9 +104,9 @@ export function BookingFilterSection() {
           label="참석 인원"
           {...register('attendees', {
             valueAsNumber: true,
-            onChange: (e) => {
+            onChange: () => {
               handleFieldChange();
-              syncSearchParams({ ...values, attendees: Number(e.target.value) });
+              syncCurrentParams();
             },
           })}
         />

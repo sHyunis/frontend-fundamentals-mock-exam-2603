@@ -4,10 +4,10 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Text, ListRow, Button, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { useToast } from 'shared/components/Toast';
-import { getRoomsQueryOptions } from '../hooks/getRoomsQueryOptions';
-import { getMyReservationsQueryOptions } from '../hooks/getMyReservationsQueryOptions';
+import { getRoomsQueryOptions } from 'shared/queries/getRoomsQueryOptions';
+import { getMyReservationsQueryOptions } from 'shared/queries/getMyReservationsQueryOptions';
 import { useCancelReservation } from '../hooks/useCancelReservation';
-import { getEquipmentLabels } from 'pages/RoomBookingPage/utils/equipment';
+import { getEquipmentLabels } from 'shared/utils/equipment';
 
 export function MyReservationList() {
   const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);

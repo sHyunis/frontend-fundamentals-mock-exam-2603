@@ -6,6 +6,7 @@ import { colors } from '_tosslib/constants/colors';
 interface DatePickerProps {
   label: string;
   value?: string;
+  defaultValue?: string;
   min?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
@@ -13,7 +14,11 @@ interface DatePickerProps {
 }
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ label, value, min, onChange, onBlur, name }, ref) => {
+  ({ label, value, defaultValue, min, onChange, onBlur, name }, ref) => {
+    const inputProps = value !== undefined
+      ? { value }
+      : { defaultValue };
+
     return (
       <div css={containerStyle}>
         <Text as="label" typography="t7" fontWeight="medium" color={colors.grey600}>
@@ -24,7 +29,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           ref={ref}
           type="date"
           name={name}
-          defaultValue={value}
+          {...inputProps}
           min={min}
           onChange={onChange}
           onBlur={onBlur}

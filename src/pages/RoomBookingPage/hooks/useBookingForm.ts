@@ -1,12 +1,11 @@
-import { useMemo } from 'react';
 import { useForm, useWatch, UseFormReturn } from 'react-hook-form';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ROUTES } from '../../routes.constants';
 import { useToast } from 'shared/components/Toast';
-import { isValidTimeRange } from '../utils/time';
 import { parseSearchParams } from '../utils/searchParams';
 import { useCreateReservation } from './useCreateReservation';
+import { useFilterErrors } from './useFilterErrors';
 import type { BookingFormData } from '../types';
 
 export interface UseBookingFormReturn {
@@ -40,18 +39,10 @@ export function useBookingForm(): UseBookingFormReturn {
 
   const values = useWatch({ control }) as BookingFormData;
 
-  const filterErrorMessage = useMemo(() => {
-    if (values.start === '' || values.end === '') {
-      return '시작 시간과 종료 시간을 선택해주세요.';
-    }
-    if (!isValidTimeRange(values.start, values.end)) {
-      return '종료 시간은 시작 시간보다 늦어야 합니다.';
-    }
-    if (values.attendees < 1) {
-      return '참석 인원을 1명 이상 입력해주세요.';
-    }
-    return null;
-  }, [values.start, values.end, values.attendees]);
+  const filterErrors = useFilterErrors({ control });
+  const filterErrorMessage = filterErrors.time
+    ?? filterErrors.attendees
+    ?? (values.start === '' || values.end === '' ? '시작 시간과 종료 시간을 선택해주세요.' : null);
 
   const isSubmitDisabled = filterErrorMessage != null;
 

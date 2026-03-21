@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import type { Equipment } from 'pages/remotes';
-import { ALL_EQUIPMENT, EQUIPMENT_LABELS } from '../utils/equipment';
+import { ALL_EQUIPMENT, EQUIPMENT_LABELS } from 'shared/utils/equipment';
 
 interface EquipmentSelectorProps {
   label: string;

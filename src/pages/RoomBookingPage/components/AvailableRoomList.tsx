@@ -1,17 +1,10 @@
 import { css } from '@emotion/react';
-import { useMemo } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Text, ListRow, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { getAvailableRoomsQueryOptions } from '../hooks/getAvailableRoomsQueryOptions';
-import type { BookingFormData, Room, Reservation } from '../types';
-import {
-  filterByCapacity,
-  filterByEquipment,
-  filterByFloor,
-  filterByTimeAvailability,
-} from '../utils/filter';
-import { getEquipmentLabels } from '../utils/equipment';
+import type { BookingFormData } from '../types';
+import { getEquipmentLabels } from 'shared/utils/equipment';
 
 interface AvailableRoomListProps {
   filter: BookingFormData;
@@ -24,31 +17,8 @@ export function AvailableRoomList({
   selectedRoomId,
   onSelectRoom,
 }: AvailableRoomListProps) {
-  const filters = useMemo(
-    () => [
-      (room: Room) => filterByCapacity(room, filter.attendees),
-      (room: Room) => filterByEquipment(room, filter.equipment),
-      (room: Room) => filterByFloor(room, filter.preferredFloor),
-    ],
-    [filter.attendees, filter.equipment, filter.preferredFloor]
-  );
-
-  const timeFilter = useMemo(
-    () => (room: Room, reservations: Reservation[]) =>
-      filterByTimeAvailability(room, reservations, {
-        date: filter.date,
-        start: filter.start,
-        end: filter.end,
-      }),
-    [filter.date, filter.start, filter.end]
-  );
-
   const { data: availableRooms } = useSuspenseQuery(
-    getAvailableRoomsQueryOptions({
-      date: filter.date,
-      filters,
-      timeFilter,
-    })
+    getAvailableRoomsQueryOptions(filter)
   );
 
   if (availableRooms.length === 0) {

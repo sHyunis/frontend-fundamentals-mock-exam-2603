@@ -5,9 +5,9 @@ import { Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { Tooltip } from 'shared/components/Tooltip';
 import { HOUR_LABELS, TOTAL_MINUTES, timeToMinutes, calculateBlockPosition } from '../utils/time';
-import { getEquipmentLabels } from 'pages/RoomBookingPage/utils/equipment';
-import { getRoomsQueryOptions } from '../hooks/getRoomsQueryOptions';
-import { getReservationsQueryOptions } from '../hooks/getReservationsQueryOptions';
+import { getEquipmentLabels } from 'shared/utils/equipment';
+import { getRoomsQueryOptions } from 'shared/queries/getRoomsQueryOptions';
+import { getReservationsQueryOptions } from 'shared/queries/getReservationsQueryOptions';
 
 interface ReservationTimelineProps {
   selectedDate: string;

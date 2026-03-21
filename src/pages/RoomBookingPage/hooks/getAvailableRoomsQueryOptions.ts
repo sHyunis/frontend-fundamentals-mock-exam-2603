@@ -1,20 +1,28 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getRooms, getReservations } from 'pages/remotes';
-import type { Room, Reservation } from '../types';
-import { orderByFloorAndName } from '../utils/filter';
+import type { Room, Reservation, Equipment } from '../types';
+import {
+  filterByCapacity,
+  filterByEquipment,
+  filterByFloor,
+  filterByTimeAvailability,
+  orderByFloorAndName,
+} from '../utils/filter';
 
-export type FilterRoom = (room: Room) => boolean;
-export type FilterTimeAvailability = (room: Room, reservations: Reservation[]) => boolean;
-
-interface Options {
+interface FilterParams {
   date: string;
-  filters?: FilterRoom[];
-  timeFilter?: FilterTimeAvailability;
+  start: string;
+  end: string;
+  attendees: number;
+  equipment: Equipment[];
+  preferredFloor: number | null;
 }
 
-export function getAvailableRoomsQueryOptions({ date, filters, timeFilter }: Options) {
+export function getAvailableRoomsQueryOptions(params: FilterParams) {
+  const { date, start, end, attendees, equipment, preferredFloor } = params;
+
   return queryOptions({
-    queryKey: ['availableRooms', date] as const,
+    queryKey: ['availableRooms', date, { start, end, attendees, equipment, preferredFloor }] as const,
     queryFn: async () => {
       const [rooms, reservations] = await Promise.all([
         getRooms(),
@@ -25,8 +33,10 @@ export function getAvailableRoomsQueryOptions({ date, filters, timeFilter }: Opt
     enabled: !!date,
     select: (data) => {
       return data.rooms
-        .filter((room) => filters?.every((filterFn) => filterFn(room)) ?? true)
-        .filter((room) => timeFilter?.(room, data.reservations) ?? true)
+        .filter((room) => filterByCapacity(room, attendees))
+        .filter((room) => filterByEquipment(room, equipment))
+        .filter((room) => filterByFloor(room, preferredFloor))
+        .filter((room) => filterByTimeAvailability(room, data.reservations, { date, start, end }))
         .sort(orderByFloorAndName);
     },
   });

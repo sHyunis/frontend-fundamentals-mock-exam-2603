@@ -27,7 +27,7 @@ export function ReservationStatusPage() {
 
         <Spacing size={16} />
 
-        <DatePicker label="날짜" value={selectedDate} min={dayjs().format('YYYY-MM-DD')} onChange={(e) => {
+        <DatePicker label="날짜" defaultValue={selectedDate} min={dayjs().format('YYYY-MM-DD')} onChange={(e) => {
           const value = e.target.value;
           if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
             setSelectedDate(value);

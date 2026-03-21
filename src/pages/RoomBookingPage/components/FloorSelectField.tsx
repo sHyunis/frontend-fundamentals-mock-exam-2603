@@ -5,7 +5,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { FloorSelect } from '../../components/FloorSelect';
-import { getRoomsQueryOptions } from '../hooks/getRoomsQueryOptions';
+import { getRoomsQueryOptions } from 'shared/queries/getRoomsQueryOptions';
 import type { BookingFormData, Room } from '../types';
 
 interface FloorSelectFieldProps {

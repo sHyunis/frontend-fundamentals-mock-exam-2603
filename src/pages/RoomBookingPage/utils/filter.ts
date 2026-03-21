@@ -1,8 +1,6 @@
 import type { Equipment, Room, Reservation } from '../types';
 import { hasTimeConflict } from './time';
 
-export { hasTimeConflict } from './time';
-
 export const filterByCapacity = (room: Room, attendees: number): boolean => {
   if (attendees <= 0) {
     return true;
