@@ -28,6 +28,9 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           min={min}
           onChange={onChange}
           onBlur={onBlur}
+          onClick={(e) => {
+            (e.target as HTMLInputElement).showPicker?.();
+          }}
           aria-label={label}
           css={inputStyle}
         />
