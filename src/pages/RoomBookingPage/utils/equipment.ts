@@ -13,5 +13,5 @@ export function getEquipmentLabels(equipment: Equipment[]): string {
   if (equipment.length === 0) {
     return '장비 없음';
   }
-  return equipment.map((e) => { return EQUIPMENT_LABELS[e]; }).join(', ');
+  return equipment.map((item) => { return EQUIPMENT_LABELS[item]; }).join(', ');
 }

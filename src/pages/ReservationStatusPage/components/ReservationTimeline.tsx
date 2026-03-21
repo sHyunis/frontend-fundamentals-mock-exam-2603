@@ -19,8 +19,8 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
   const [activeReservationId, setActiveReservationId] = useState<string | null>(null);
 
   const getReservationsForRoom = (roomId: string) => {
-    return reservations.filter((r) => {
-      return r.roomId === roomId;
+    return reservations.filter((reservation) => {
+      return reservation.roomId === roomId;
     });
   };
 
@@ -42,7 +42,7 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
         <div css={roomColumnStyle} />
         <div css={timelineHeaderStyle}>
           {HOUR_LABELS.map((time) => {
-            const left = (timeToMinutes(time) / TOTAL_MINUTES) * 100;
+            const leftPercent = (timeToMinutes(time) / TOTAL_MINUTES) * 100;
             return (
               <Text
                 key={time}
@@ -51,7 +51,7 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
                 color={colors.grey400}
                 css={css`
                   position: absolute;
-                  left: ${left}%;
+                  left: ${leftPercent}%;
                   transform: translateX(-50%);
                   font-size: 10px;
                   letter-spacing: -0.3px;

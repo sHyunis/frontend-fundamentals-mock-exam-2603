@@ -46,7 +46,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
     setToasts((prev) => [...prev, { ...options, id }]);
 
     setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, duration);
   }, []);
 

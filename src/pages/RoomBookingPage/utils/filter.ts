@@ -39,10 +39,10 @@ export const filterByTimeAvailability = (
     return true;
   }
   const roomReservations = reservations.filter(
-    (r) => r.roomId === room.id && r.date === params.date
+    (reservation) => reservation.roomId === room.id && reservation.date === params.date
   );
-  return !roomReservations.some((r) => {
-    return hasTimeConflict(params.start, params.end, r.start, r.end);
+  return !roomReservations.some((reservation) => {
+    return hasTimeConflict(params.start, params.end, reservation.start, reservation.end);
   });
 };
 

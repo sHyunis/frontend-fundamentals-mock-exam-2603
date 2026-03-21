@@ -17,45 +17,13 @@ interface AvailableRoomListProps {
   filter: BookingFormData;
   selectedRoomId: string | null;
   onSelectRoom: (roomId: string) => void;
-  errorMessage: string | null;
 }
 
 export function AvailableRoomList({
   filter,
   selectedRoomId,
   onSelectRoom,
-  errorMessage,
 }: AvailableRoomListProps) {
-  if (errorMessage) {
-    return (
-      <div css={emptyStyle}>
-        <Text typography="t6" color={colors.grey500}>
-          예약 조건을 먼저 선택해 주세요.
-        </Text>
-      </div>
-    );
-  }
-
-  return (
-    <AvailableRoomListInner
-      filter={filter}
-      selectedRoomId={selectedRoomId}
-      onSelectRoom={onSelectRoom}
-    />
-  );
-}
-
-interface AvailableRoomListInnerProps {
-  filter: BookingFormData;
-  selectedRoomId: string | null;
-  onSelectRoom: (roomId: string) => void;
-}
-
-function AvailableRoomListInner({
-  filter,
-  selectedRoomId,
-  onSelectRoom,
-}: AvailableRoomListInnerProps) {
   const filters = useMemo(
     () => [
       (room: Room) => filterByCapacity(room, filter.attendees),
@@ -87,7 +55,7 @@ function AvailableRoomListInner({
     return (
       <div css={emptyStyle}>
         <Text typography="t6" color={colors.grey500}>
-          조건에 맞는 회의실이 없습니다.
+          {'조건에 맞는 회의실이 없습니다.'}
         </Text>
       </div>
     );

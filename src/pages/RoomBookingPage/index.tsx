@@ -61,16 +61,23 @@ export function RoomBookingPage() {
         <Spacing size={24} />
 
         <section css={sectionStyle}>
-          <ErrorBoundary>
-            <Suspense fallback={<AvailableRoomList.Loading />}>
-              <AvailableRoomList
-                filter={values}
-                selectedRoomId={values.roomId}
-                onSelectRoom={handleRoomSelect}
-                errorMessage={filterErrorMessage}
-              />
-            </Suspense>
-          </ErrorBoundary>
+          {filterErrorMessage ? (
+            <div css={emptyStyle}>
+              <Text typography="t6" color={colors.grey500}>
+                {'예약 조건을 먼저 선택해 주세요.'}
+              </Text>
+            </div>
+          ) : (
+            <ErrorBoundary>
+              <Suspense fallback={<AvailableRoomList.Loading />}>
+                <AvailableRoomList
+                  filter={values}
+                  selectedRoomId={values.roomId}
+                  onSelectRoom={handleRoomSelect}
+                />
+              </Suspense>
+            </ErrorBoundary>
+          )}
 
           <Spacing size={16} />
           
@@ -130,4 +137,11 @@ const errorBoxStyle = css`
   display: flex;
   align-items: center;
   gap: 8px;
+`;
+
+const emptyStyle = css`
+  padding: 40px 0;
+  text-align: center;
+  background: ${colors.grey50};
+  border-radius: 14px;
 `;

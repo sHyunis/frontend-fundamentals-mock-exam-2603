@@ -1,12 +1,12 @@
-import { forwardRef } from 'react';
+import { forwardRef, type ChangeEvent, type FocusEvent } from 'react';
 import { css } from '@emotion/react';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 
 interface AttendeesInputProps {
   label: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
   name?: string;
 }
 

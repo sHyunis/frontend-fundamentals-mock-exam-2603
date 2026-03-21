@@ -20,7 +20,7 @@ export function MyReservationList() {
   const toast = useToast();
 
   const getRoomName = (roomId: string) => {
-    return rooms.find((r) => { return r.id === roomId; })?.name ?? roomId;
+    return rooms.find((room) => { return room.id === roomId; })?.name ?? roomId;
   };
 
   const handleCancelClick = (id: string) => {

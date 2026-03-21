@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, type ChangeEvent, type FocusEvent } from 'react';
 import { css } from '@emotion/react';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -7,8 +7,8 @@ interface TimeSelectProps {
   label: string;
   options: string[];
   value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  onBlur?: (e: React.FocusEvent<HTMLSelectElement>) => void;
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: (e: FocusEvent<HTMLSelectElement>) => void;
   name?: string;
 }
 
@@ -22,9 +22,9 @@ export const TimeSelect = forwardRef<HTMLSelectElement, TimeSelectProps>(
         <Spacing size={6} />
         <select ref={ref} name={name} value={value} onChange={onChange} onBlur={onBlur} aria-label={label} css={selectStyle}>
           <option value="">선택</option>
-          {options.map((t) => (
-            <option key={t} value={t}>
-              {t}
+          {options.map((time) => (
+            <option key={time} value={time}>
+              {time}
             </option>
           ))}
         </select>

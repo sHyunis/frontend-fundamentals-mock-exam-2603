@@ -2,10 +2,10 @@ const TIMELINE_START = 9;
 const TIMELINE_END = 20;
 
 export const TIME_SLOTS: string[] = [];
-for (let h = TIMELINE_START; h <= TIMELINE_END; h++) {
-  TIME_SLOTS.push(`${String(h).padStart(2, '0')}:00`);
-  if (h < TIMELINE_END) {
-    TIME_SLOTS.push(`${String(h).padStart(2, '0')}:30`);
+for (let hour = TIMELINE_START; hour <= TIMELINE_END; hour++) {
+  TIME_SLOTS.push(`${String(hour).padStart(2, '0')}:00`);
+  if (hour < TIMELINE_END) {
+    TIME_SLOTS.push(`${String(hour).padStart(2, '0')}:30`);
   }
 }
 
@@ -28,9 +28,9 @@ export const hasTimeConflict = (
   start2: string,
   end2: string
 ): boolean => {
-  const s1 = timeToMinutes(start1);
-  const e1 = timeToMinutes(end1);
-  const s2 = timeToMinutes(start2);
-  const e2 = timeToMinutes(end2);
-  return s1 < e2 && s2 < e1;
+  const startMinutes1 = timeToMinutes(start1);
+  const endMinutes1 = timeToMinutes(end1);
+  const startMinutes2 = timeToMinutes(start2);
+  const endMinutes2 = timeToMinutes(end2);
+  return startMinutes1 < endMinutes2 && startMinutes2 < endMinutes1;
 };
