@@ -5,6 +5,6 @@ export function getReservationsQueryOptions(date: string) {
   return queryOptions({
     queryKey: ['reservations', date] as const,
     queryFn: () => getReservations(date),
-    enabled: !!date,
+    enabled: Boolean(date),
   });
 }

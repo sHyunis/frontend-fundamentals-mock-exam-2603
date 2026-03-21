@@ -20,7 +20,11 @@ export function MyReservationList() {
   const toast = useToast();
 
   const getRoomName = (roomId: string) => {
-    return rooms.find((room) => { return room.id === roomId; })?.name ?? roomId;
+    return (
+      rooms.find(room => {
+        return room.id === roomId;
+      })?.name ?? roomId
+    );
   };
 
   const handleCancelClick = (id: string) => {
@@ -64,14 +68,16 @@ export function MyReservationList() {
       </div>
       <Spacing size={16} />
       <div css={listStyle}>
-        {myReservations.map((res) => (
+        {myReservations.map(res => (
           <div key={res.id} css={itemStyle}>
             <ListRow
               contents={
                 <ListRow.Text2Rows
                   top={getRoomName(res.roomId)}
                   topProps={{ typography: 't6', fontWeight: 'bold', color: colors.grey900 }}
-                  bottom={`${res.date} ${res.start}~${res.end} · ${res.attendees}명 · ${getEquipmentLabels(res.equipment)}`}
+                  bottom={`${res.date} ${res.start}~${res.end} · ${res.attendees}명 · ${getEquipmentLabels(
+                    res.equipment
+                  )}`}
                   bottomProps={{ typography: 't7', color: colors.grey600 }}
                 />
               }
@@ -81,7 +87,7 @@ export function MyReservationList() {
                   style="weak"
                   size="small"
                   disabled={cancelMutation.isPending || cancelTargetId === res.id}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.stopPropagation();
                     handleCancelClick(res.id);
                   }}

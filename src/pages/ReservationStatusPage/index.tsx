@@ -27,12 +27,17 @@ export function ReservationStatusPage() {
 
         <Spacing size={16} />
 
-        <DatePicker label="날짜" defaultValue={selectedDate} min={dayjs().format('YYYY-MM-DD')} onChange={(e) => {
-          const value = e.target.value;
-          if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
-            setSelectedDate(value);
-          }
-        }} />
+        <DatePicker
+          label="날짜"
+          defaultValue={selectedDate}
+          min={dayjs().format('YYYY-MM-DD')}
+          onChange={e => {
+            const value = e.target.value;
+            if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+              setSelectedDate(value);
+            }
+          }}
+        />
       </section>
 
       <Spacing size={24} />
@@ -70,7 +75,12 @@ export function ReservationStatusPage() {
       <Spacing size={24} />
 
       <div css={sectionStyle}>
-        <Button display="full" onClick={() => { navigate(ROUTES.BOOKING); }}>
+        <Button
+          display="full"
+          onClick={() => {
+            navigate(ROUTES.BOOKING);
+          }}
+        >
           예약하기
         </Button>
       </div>

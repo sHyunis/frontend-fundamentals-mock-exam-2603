@@ -63,7 +63,7 @@ export function BookingFilterSection() {
               label="시작 시간"
               options={START_TIME_OPTIONS}
               value={field.value}
-              onChange={(e) => {
+              onChange={e => {
                 field.onChange(e.target.value);
                 handleFieldChange();
                 syncSearchParams({ ...getValues(), start: e.target.value });
@@ -79,7 +79,7 @@ export function BookingFilterSection() {
               label="종료 시간"
               options={END_TIME_OPTIONS}
               value={field.value}
-              onChange={(e) => {
+              onChange={e => {
                 field.onChange(e.target.value);
                 handleFieldChange();
                 syncSearchParams({ ...getValues(), end: e.target.value });
@@ -134,7 +134,7 @@ export function BookingFilterSection() {
           <EquipmentSelector
             label="필요 장비"
             value={field.value}
-            onChange={(value) => handleControllerChange('equipment', value)}
+            onChange={value => handleControllerChange('equipment', value)}
           />
         )}
       />

@@ -20,13 +20,10 @@ export function useFilterErrors(options?: UseFilterErrorsOptions): FilterErrors 
   const hasTimeInputs = start !== '' && end !== '';
 
   return useMemo((): FilterErrors => {
-    const timeError = hasTimeInputs && !isValidTimeRange(start, end)
-      ? '종료 시간은 시작 시간보다 늦어야 합니다.'
-      : null;
+    const timeError =
+      hasTimeInputs && !isValidTimeRange(start, end) ? '종료 시간은 시작 시간보다 늦어야 합니다.' : null;
 
-    const attendeesError = attendees < 1
-      ? '참석 인원은 1명 이상이어야 합니다.'
-      : null;
+    const attendeesError = attendees < 1 ? '참석 인원은 1명 이상이어야 합니다.' : null;
 
     return {
       time: timeError,

@@ -18,16 +18,13 @@ export const timeToMinutes = (time: string): number => {
 };
 
 export function isValidTimeRange(start: string, end: string): boolean {
-  if (!start || !end) return false;
+  if (!start || !end) {
+    return false;
+  }
   return timeToMinutes(end) > timeToMinutes(start);
 }
 
-export const hasTimeConflict = (
-  start1: string,
-  end1: string,
-  start2: string,
-  end2: string
-): boolean => {
+export const hasTimeConflict = (start1: string, end1: string, start2: string, end2: string): boolean => {
   const startMinutes1 = timeToMinutes(start1);
   const endMinutes1 = timeToMinutes(end1);
   const startMinutes2 = timeToMinutes(start2);

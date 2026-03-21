@@ -70,22 +70,14 @@ export function RoomBookingPage() {
           ) : (
             <ErrorBoundary>
               <Suspense fallback={<AvailableRoomList.Loading />}>
-                <AvailableRoomList
-                  filter={values}
-                  selectedRoomId={values.roomId}
-                  onSelectRoom={handleRoomSelect}
-                />
+                <AvailableRoomList filter={values} selectedRoomId={values.roomId} onSelectRoom={handleRoomSelect} />
               </Suspense>
             </ErrorBoundary>
           )}
 
           <Spacing size={16} />
-          
-          <Button
-            display="full"
-            onClick={handleSubmit}
-            disabled={isSubmitDisabled || isPendingBooking}
-          >
+
+          <Button display="full" onClick={handleSubmit} disabled={isSubmitDisabled || isPendingBooking}>
             {isPendingBooking ? '예약 중...' : '확정'}
           </Button>
         </section>

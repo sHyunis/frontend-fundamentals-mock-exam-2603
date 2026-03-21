@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
-import { useWatch } from 'react-hook-form';
+import { useWatch, type Path, type PathValue } from 'react-hook-form';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -9,7 +9,7 @@ import { getRoomsQueryOptions } from 'shared/queries/getRoomsQueryOptions';
 import type { BookingFormData, Room } from '../types';
 
 interface FloorSelectFieldProps {
-  onFilterChange: <K extends keyof BookingFormData>(key: K, value: BookingFormData[K]) => void;
+  onFilterChange: <K extends Path<BookingFormData>>(key: K, value: PathValue<BookingFormData, K>) => void;
 }
 
 export function FloorSelectField({ onFilterChange }: FloorSelectFieldProps) {
@@ -26,7 +26,7 @@ export function FloorSelectField({ onFilterChange }: FloorSelectFieldProps) {
       label="선호 층"
       value={preferredFloor}
       floors={floors}
-      onChange={(value) => {
+      onChange={value => {
         onFilterChange('preferredFloor', value);
       }}
     />
@@ -59,7 +59,7 @@ FloorSelectField.Error = function FloorSelectFieldError() {
       </div>
     </div>
   );
-}
+};
 
 const skeletonFieldStyle = css`
   display: flex;
@@ -73,8 +73,13 @@ const skeletonInputStyle = css`
   border-radius: 12px;
   animation: pulse 1.5s ease-in-out infinite;
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 `;
 

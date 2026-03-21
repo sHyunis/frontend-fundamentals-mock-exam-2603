@@ -12,7 +12,7 @@ export const filterByEquipment = (room: Room, requiredEquipment: Equipment[]): b
   if (requiredEquipment.length === 0) {
     return true;
   }
-  return requiredEquipment.every((eq) => room.equipment.includes(eq));
+  return requiredEquipment.every(eq => room.equipment.includes(eq));
 };
 
 export const filterByFloor = (room: Room, floor: number | null): boolean => {
@@ -37,9 +37,9 @@ export const filterByTimeAvailability = (
     return true;
   }
   const roomReservations = reservations.filter(
-    (reservation) => reservation.roomId === room.id && reservation.date === params.date
+    reservation => reservation.roomId === room.id && reservation.date === params.date
   );
-  return !roomReservations.some((reservation) => {
+  return !roomReservations.some(reservation => {
     return hasTimeConflict(params.start, params.end, reservation.start, reservation.end);
   });
 };

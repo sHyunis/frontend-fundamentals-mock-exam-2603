@@ -19,7 +19,7 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
   const [activeReservationId, setActiveReservationId] = useState<string | null>(null);
 
   const getReservationsForRoom = (roomId: string) => {
-    return reservations.filter((reservation) => {
+    return reservations.filter(reservation => {
       return reservation.roomId === roomId;
     });
   };
@@ -41,7 +41,7 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
       <div css={headerStyle}>
         <div css={roomColumnStyle} />
         <div css={timelineHeaderStyle}>
-          {HOUR_LABELS.map((time) => {
+          {HOUR_LABELS.map(time => {
             const leftPercent = (timeToMinutes(time) / TOTAL_MINUTES) * 100;
             return (
               <Text
@@ -74,19 +74,26 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
                 fontWeight="medium"
                 color={colors.grey700}
                 ellipsisAfterLines={1}
-                css={css`font-size: 12px;`}
+                css={css`
+                  font-size: 12px;
+                `}
               >
                 {room.name}
               </Text>
             </div>
             <div css={timelineAreaStyle}>
-              {roomReservations.map((reservation) => {
+              {roomReservations.map(reservation => {
                 const { left, width } = calculateBlockPosition(reservation.start, reservation.end);
                 const isActive = activeReservationId === reservation.id;
                 return (
                   <div
                     key={reservation.id}
-                    css={css`position: absolute; left: ${left}%; width: ${width}%; height: 100%;`}
+                    css={css`
+                      position: absolute;
+                      left: ${left}%;
+                      width: ${width}%;
+                      height: 100%;
+                    `}
                   >
                     <Tooltip
                       isShowTooltip={isActive}
@@ -94,11 +101,11 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
                       position="bottom"
                       content={
                         <div css={tooltipContentStyle}>
-                          <div>{reservation.start} ~ {reservation.end}</div>
+                          <div>
+                            {reservation.start} ~ {reservation.end}
+                          </div>
                           <div>{reservation.attendees}명</div>
-                          {reservation.equipment.length > 0 && (
-                            <div>{getEquipmentLabels(reservation.equipment)}</div>
-                          )}
+                          {reservation.equipment.length > 0 && <div>{getEquipmentLabels(reservation.equipment)}</div>}
                         </div>
                       }
                     >
@@ -184,7 +191,12 @@ const tooltipContentStyle = css`
 ReservationTimeline.Loading = function ReservationTimelineLoading() {
   return (
     <div css={containerStyle}>
-      <div css={css`padding: 24px; text-align: center;`}>
+      <div
+        css={css`
+          padding: 24px;
+          text-align: center;
+        `}
+      >
         <Text typography="t7" color={colors.grey400}>
           불러오는 중...
         </Text>

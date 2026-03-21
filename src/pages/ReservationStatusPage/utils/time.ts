@@ -10,7 +10,7 @@ for (let hour = TIMELINE_START; hour <= TIMELINE_END; hour++) {
   }
 }
 
-export const HOUR_LABELS = TIME_SLOTS.filter((time) => {
+export const HOUR_LABELS = TIME_SLOTS.filter(time => {
   return time.endsWith(':00');
 });
 

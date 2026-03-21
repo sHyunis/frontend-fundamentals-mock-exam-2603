@@ -15,9 +15,7 @@ interface DatePickerProps {
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
   ({ label, value, defaultValue, min, onChange, onBlur, name }, ref) => {
-    const inputProps = value !== undefined
-      ? { value }
-      : { defaultValue };
+    const inputProps = value !== undefined ? { value } : { defaultValue };
 
     return (
       <div css={containerStyle}>
@@ -33,7 +31,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           min={min}
           onChange={onChange}
           onBlur={onBlur}
-          onClick={(e) => {
+          onClick={e => {
             (e.target as HTMLInputElement).showPicker?.();
           }}
           aria-label={label}

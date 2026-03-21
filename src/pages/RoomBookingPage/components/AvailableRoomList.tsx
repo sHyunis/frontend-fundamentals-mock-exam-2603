@@ -12,14 +12,8 @@ interface AvailableRoomListProps {
   onSelectRoom: (roomId: string) => void;
 }
 
-export function AvailableRoomList({
-  filter,
-  selectedRoomId,
-  onSelectRoom,
-}: AvailableRoomListProps) {
-  const { data: availableRooms } = useSuspenseQuery(
-    getAvailableRoomsQueryOptions(filter)
-  );
+export function AvailableRoomList({ filter, selectedRoomId, onSelectRoom }: AvailableRoomListProps) {
+  const { data: availableRooms } = useSuspenseQuery(getAvailableRoomsQueryOptions(filter));
 
   if (availableRooms.length === 0) {
     return (
@@ -43,7 +37,7 @@ export function AvailableRoomList({
       </div>
       <Spacing size={16} />
       <div css={listStyle}>
-        {availableRooms.map((room) => {
+        {availableRooms.map(room => {
           const isSelected = selectedRoomId === room.id;
           return (
             <div
