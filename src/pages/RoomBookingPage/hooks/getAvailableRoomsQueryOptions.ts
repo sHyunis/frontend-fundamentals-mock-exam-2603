@@ -24,15 +24,10 @@ export function getAvailableRoomsQueryOptions({ date, filters, timeFilter }: Opt
     },
     enabled: !!date,
     select: (data) => {
-      let filtered = data.rooms.filter((room) => {
-        return filters?.every((filter) => filter(room)) ?? true;
-      });
-
-      if (timeFilter) {
-        filtered = filtered.filter((room) => timeFilter(room, data.reservations));
-      }
-
-      return filtered.sort(orderByFloorAndName);
+      return data.rooms
+        .filter((room) => filters?.every((filterFn) => filterFn(room)) ?? true)
+        .filter((room) => timeFilter?.(room, data.reservations) ?? true)
+        .sort(orderByFloorAndName);
     },
   });
 }

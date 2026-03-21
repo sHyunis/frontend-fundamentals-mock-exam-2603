@@ -3,7 +3,6 @@ import { css, Global } from '@emotion/react';
 import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GlobalPortal } from './GlobalPortal';
-import { DialogProvider } from 'shared/components/Dialog';
 import { ToastProvider } from 'shared/components/Toast';
 
 import '_tosslib/sass/app.scss';
@@ -26,7 +25,6 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        <DialogProvider>
           <GlobalPortal.Provider>
           <Global
             styles={css`
@@ -42,7 +40,6 @@ export default function App() {
             <Routes />
           </PageLayout>
         </GlobalPortal.Provider>
-        </DialogProvider>
       </ToastProvider>
     </QueryClientProvider>
   );
