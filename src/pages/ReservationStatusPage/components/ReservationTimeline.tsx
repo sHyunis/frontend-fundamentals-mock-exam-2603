@@ -4,7 +4,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { Tooltip } from 'shared/components/Tooltip';
-import { HOUR_LABELS, TOTAL_MINUTES, timeToMinutes, calculateBlockPosition } from '../utils/time';
+import { HOUR_LABELS, TOTAL_MINUTES, timeToTimelineMinutes, calculateBlockPosition } from '../utils/time';
 import { getEquipmentLabels } from 'shared/utils/equipment';
 import { getRoomsQueryOptions } from 'shared/queries/getRoomsQueryOptions';
 import { getReservationsQueryOptions } from 'shared/queries/getReservationsQueryOptions';
@@ -42,20 +42,15 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
         <div css={roomColumnStyle} />
         <div css={timelineHeaderStyle}>
           {HOUR_LABELS.map(time => {
-            const leftPercent = (timeToMinutes(time) / TOTAL_MINUTES) * 100;
+            const leftPercent = (timeToTimelineMinutes(time) / TOTAL_MINUTES) * 100;
             return (
               <Text
                 key={time}
                 typography="t7"
                 fontWeight="regular"
                 color={colors.grey400}
-                css={css`
-                  position: absolute;
-                  left: ${leftPercent}%;
-                  transform: translateX(-50%);
-                  font-size: 10px;
-                  letter-spacing: -0.3px;
-                `}
+                css={hourLabelStyle}
+                style={{ left: `${leftPercent}%` }}
               >
                 {time.slice(0, 2)}
               </Text>
@@ -74,9 +69,7 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
                 fontWeight="medium"
                 color={colors.grey700}
                 ellipsisAfterLines={1}
-                css={css`
-                  font-size: 12px;
-                `}
+                css={roomNameStyle}
               >
                 {room.name}
               </Text>
@@ -86,15 +79,7 @@ export function ReservationTimeline({ selectedDate }: ReservationTimelineProps) 
                 const { left, width } = calculateBlockPosition(reservation.start, reservation.end);
                 const isActive = activeReservationId === reservation.id;
                 return (
-                  <div
-                    key={reservation.id}
-                    css={css`
-                      position: absolute;
-                      left: ${left}%;
-                      width: ${width}%;
-                      height: 100%;
-                    `}
-                  >
+                  <div key={reservation.id} css={blockPositionStyle} style={{ left: `${left}%`, width: `${width}%` }}>
                     <Tooltip
                       isShowTooltip={isActive}
                       onClose={handleTooltipClose}
@@ -182,21 +167,37 @@ const blockStyle = (isActive: boolean) => css`
   }
 `;
 
+const hourLabelStyle = css`
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: -0.3px;
+`;
+
+const roomNameStyle = css`
+  font-size: 12px;
+`;
+
+const blockPositionStyle = css`
+  position: absolute;
+  height: 100%;
+`;
+
 const tooltipContentStyle = css`
   font-size: 12px;
   line-height: 1.6;
   color: ${colors.white};
 `;
 
+const loadingContentStyle = css`
+  padding: 24px;
+  text-align: center;
+`;
+
 ReservationTimeline.Loading = function ReservationTimelineLoading() {
   return (
     <div css={containerStyle}>
-      <div
-        css={css`
-          padding: 24px;
-          text-align: center;
-        `}
-      >
+      <div css={loadingContentStyle}>
         <Text typography="t7" color={colors.grey400}>
           불러오는 중...
         </Text>

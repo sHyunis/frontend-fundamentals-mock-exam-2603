@@ -1,15 +1,19 @@
 import dayjs from 'dayjs';
 import type { BookingFormData, Equipment } from '../types';
 
+const VALID_EQUIPMENT: Equipment[] = ['tv', 'whiteboard', 'video', 'speaker'];
+
+function isEquipment(value: string): value is Equipment {
+  return (VALID_EQUIPMENT as string[]).includes(value);
+}
+
 export function parseSearchParams(searchParams: URLSearchParams): Omit<BookingFormData, 'roomId'> {
   return {
     date: searchParams.get('date') ?? dayjs().format('YYYY-MM-DD'),
     start: searchParams.get('start') ?? searchParams.get('startTime') ?? '',
     end: searchParams.get('end') ?? searchParams.get('endTime') ?? '',
     attendees: Number(searchParams.get('attendees')) || 1,
-    equipment: (searchParams.get('equipment')
-      ? searchParams.get('equipment')!.split(',').filter(Boolean)
-      : []) as Equipment[],
+    equipment: searchParams.get('equipment')?.split(',').filter(isEquipment) ?? [],
     preferredFloor: searchParams.get('floor') ? Number(searchParams.get('floor')) : null,
   };
 }

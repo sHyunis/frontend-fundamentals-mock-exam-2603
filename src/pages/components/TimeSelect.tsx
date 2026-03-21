@@ -1,4 +1,4 @@
-import { forwardRef, type ChangeEvent, type FocusEvent } from 'react';
+import { forwardRef, useRef, type ChangeEvent, type FocusEvent } from 'react';
 import { css } from '@emotion/react';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -14,15 +14,17 @@ interface TimeSelectProps {
 
 export const TimeSelect = forwardRef<HTMLSelectElement, TimeSelectProps>(
   ({ label, options, value, onChange, onBlur, name }, ref) => {
+    const idRef = useRef(`timeselect-${name ?? label}`);
+    const selectId = idRef.current;
     return (
       <div css={containerStyle}>
-        <Text as="label" typography="t7" fontWeight="medium" color={colors.grey600}>
+        <Text as="label" htmlFor={selectId} typography="t7" fontWeight="medium" color={colors.grey600}>
           {label}
         </Text>
         <Spacing size={6} />
-        <select ref={ref} name={name} value={value} onChange={onChange} onBlur={onBlur} aria-label={label} css={selectStyle}>
+        <select ref={ref} id={selectId} name={name} value={value} onChange={onChange} onBlur={onBlur} css={selectStyle}>
           <option value="">선택</option>
-          {options.map((time) => (
+          {options.map(time => (
             <option key={time} value={time}>
               {time}
             </option>

@@ -14,13 +14,13 @@ export const HOUR_LABELS = TIME_SLOTS.filter(time => {
   return time.endsWith(':00');
 });
 
-export function timeToMinutes(time: string): number {
+export function timeToTimelineMinutes(time: string): number {
   const [hours, minutes] = time.split(':').map(Number);
   return (hours - TIMELINE_START) * 60 + minutes;
 }
 
 export function calculateBlockPosition(start: string, end: string): { left: number; width: number } {
-  const leftPercent = (timeToMinutes(start) / TOTAL_MINUTES) * 100;
-  const widthPercent = ((timeToMinutes(end) - timeToMinutes(start)) / TOTAL_MINUTES) * 100;
+  const leftPercent = (timeToTimelineMinutes(start) / TOTAL_MINUTES) * 100;
+  const widthPercent = ((timeToTimelineMinutes(end) - timeToTimelineMinutes(start)) / TOTAL_MINUTES) * 100;
   return { left: leftPercent, width: widthPercent };
 }

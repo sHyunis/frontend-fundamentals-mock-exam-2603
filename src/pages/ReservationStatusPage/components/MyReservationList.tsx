@@ -34,16 +34,20 @@ export function MyReservationList() {
     }
 
     setCancelTargetId(id);
-    cancelMutation.mutate(id, {
-      onSuccess: () => {
-        toast.success('예약이 취소되었습니다.');
-        setCancelTargetId(null);
-      },
-      onError: () => {
-        toast.error('취소에 실패했습니다.');
-        setCancelTargetId(null);
-      },
-    });
+    const reservation = myReservations.find(r => r.id === id);
+    cancelMutation.mutate(
+      { id, date: reservation?.date ?? '' },
+      {
+        onSuccess: () => {
+          toast.success('예약이 취소되었습니다.');
+          setCancelTargetId(null);
+        },
+        onError: () => {
+          toast.error('취소에 실패했습니다.');
+          setCancelTargetId(null);
+        },
+      }
+    );
   };
 
   if (myReservations.length === 0) {

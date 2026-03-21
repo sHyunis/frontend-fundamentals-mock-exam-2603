@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { Suspense, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -12,6 +13,7 @@ import { MyReservationList } from './components/MyReservationList';
 
 export function ReservationStatusPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
 
   return (
@@ -51,7 +53,10 @@ export function ReservationStatusPage() {
 
         <Spacing size={16} />
 
-        <ErrorBoundary message="예약 현황을 불러오는데 실패했습니다.">
+        <ErrorBoundary
+          message="예약 현황을 불러오는데 실패했습니다."
+          onReset={() => queryClient.resetQueries({ queryKey: ['reservations'] })}
+        >
           <Suspense fallback={<ReservationTimeline.Loading />}>
             <ReservationTimeline selectedDate={selectedDate} />
           </Suspense>
@@ -63,7 +68,10 @@ export function ReservationStatusPage() {
       <Spacing size={24} />
 
       <section css={sectionStyle}>
-        <ErrorBoundary message="내 예약 목록을 불러오는데 실패했습니다.">
+        <ErrorBoundary
+          message="내 예약 목록을 불러오는데 실패했습니다."
+          onReset={() => queryClient.resetQueries({ queryKey: ['myReservations'] })}
+        >
           <Suspense fallback={<MyReservationList.Loading />}>
             <MyReservationList />
           </Suspense>

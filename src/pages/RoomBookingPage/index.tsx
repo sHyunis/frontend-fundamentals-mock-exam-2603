@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import { Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormProvider } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { ROUTES } from '../routes.constants';
@@ -12,14 +13,15 @@ import { useBookingForm } from './hooks/useBookingForm';
 
 export function RoomBookingPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     form,
-    values,
     filterErrorMessage,
     submitErrorMessage,
     isSubmitDisabled,
     isPendingBooking,
+    selectedRoomId,
     handleRoomSelect,
     handleSubmit,
   } = useBookingForm();
@@ -68,9 +70,9 @@ export function RoomBookingPage() {
               </Text>
             </div>
           ) : (
-            <ErrorBoundary>
+            <ErrorBoundary onReset={() => queryClient.resetQueries({ queryKey: ['availableRooms'] })}>
               <Suspense fallback={<AvailableRoomList.Loading />}>
-                <AvailableRoomList filter={values} selectedRoomId={values.roomId} onSelectRoom={handleRoomSelect} />
+                <AvailableRoomList selectedRoomId={selectedRoomId} onSelectRoom={handleRoomSelect} />
               </Suspense>
             </ErrorBoundary>
           )}

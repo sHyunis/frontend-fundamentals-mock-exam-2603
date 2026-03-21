@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Text, ListRow, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -7,13 +8,19 @@ import type { BookingFormData } from '../types';
 import { getEquipmentLabels } from 'shared/utils/equipment';
 
 interface AvailableRoomListProps {
-  filter: BookingFormData;
   selectedRoomId: string | null;
   onSelectRoom: (roomId: string) => void;
 }
 
-export function AvailableRoomList({ filter, selectedRoomId, onSelectRoom }: AvailableRoomListProps) {
-  const { data: availableRooms } = useSuspenseQuery(getAvailableRoomsQueryOptions(filter));
+const FILTER_FIELDS = ['date', 'start', 'end', 'attendees', 'equipment', 'preferredFloor'] as const;
+
+export function AvailableRoomList({ selectedRoomId, onSelectRoom }: AvailableRoomListProps) {
+  const { control } = useFormContext<BookingFormData>();
+  const [date, start, end, attendees, equipment, preferredFloor] = useWatch({ control, name: [...FILTER_FIELDS] });
+
+  const { data: availableRooms } = useSuspenseQuery(
+    getAvailableRoomsQueryOptions({ date, start, end, attendees, equipment, preferredFloor })
+  );
 
   if (availableRooms.length === 0) {
     return (

@@ -36,7 +36,7 @@ export function createReservation(data: {
   attendees: number;
   equipment: string[];
 }) {
-  return http.post<typeof data, { ok: boolean; reservation?: unknown; code?: string; message?: string }>(
+  return http.post<typeof data, { ok: boolean; reservation?: Reservation; code?: string; message?: string }>(
     '/api/reservations',
     data
   );

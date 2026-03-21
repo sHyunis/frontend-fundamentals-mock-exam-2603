@@ -1,4 +1,4 @@
-import { forwardRef, type ChangeEvent, type FocusEvent } from 'react';
+import { forwardRef, useRef, type ChangeEvent, type FocusEvent } from 'react';
 import { css } from '@emotion/react';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -15,16 +15,19 @@ interface DatePickerProps {
 
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
   ({ label, value, defaultValue, min, onChange, onBlur, name }, ref) => {
+    const idRef = useRef(`datepicker-${name ?? label}`);
+    const inputId = idRef.current;
     const inputProps = value !== undefined ? { value } : { defaultValue };
 
     return (
       <div css={containerStyle}>
-        <Text as="label" typography="t7" fontWeight="medium" color={colors.grey600}>
+        <Text as="label" htmlFor={inputId} typography="t7" fontWeight="medium" color={colors.grey600}>
           {label}
         </Text>
         <Spacing size={6} />
         <input
           ref={ref}
+          id={inputId}
           type="date"
           name={name}
           {...inputProps}
@@ -34,7 +37,6 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           onClick={e => {
             (e.target as HTMLInputElement).showPicker?.();
           }}
-          aria-label={label}
           css={inputStyle}
         />
       </div>

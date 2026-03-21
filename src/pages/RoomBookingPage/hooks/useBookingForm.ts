@@ -10,11 +10,11 @@ import type { BookingFormData } from '../types';
 
 export interface UseBookingFormReturn {
   form: UseFormReturn<BookingFormData>;
-  values: BookingFormData;
   filterErrorMessage: string | null;
   submitErrorMessage: string | null;
   isSubmitDisabled: boolean;
   isPendingBooking: boolean;
+  selectedRoomId: string | null;
   handleRoomSelect: (roomId: string) => void;
   handleSubmit: () => Promise<void>;
 }
@@ -24,7 +24,7 @@ export function useBookingForm(): UseBookingFormReturn {
 
   const navigate = useNavigate();
   const toast = useToast();
-  
+
   const createMutation = useCreateReservation();
 
   const form = useForm<BookingFormData>({
@@ -35,14 +35,17 @@ export function useBookingForm(): UseBookingFormReturn {
     mode: 'onChange',
   });
 
-  const { setValue, setError, clearErrors, control } = form;
+  const { setValue, setError, clearErrors, control, getValues } = form;
 
-  const values = useWatch({ control }) as BookingFormData;
+  const start = useWatch({ control, name: 'start' });
+  const end = useWatch({ control, name: 'end' });
+  const roomId = useWatch({ control, name: 'roomId' });
 
   const filterErrors = useFilterErrors({ control });
-  const filterErrorMessage = filterErrors.time
-    ?? filterErrors.attendees
-    ?? (values.start === '' || values.end === '' ? '시작 시간과 종료 시간을 선택해주세요.' : null);
+  const hasEmptyTime = start === '' || end === '';
+
+  const filterErrorMessage =
+    filterErrors.time ?? filterErrors.attendees ?? (hasEmptyTime ? '시작 시간과 종료 시간을 선택해주세요.' : null);
 
   const isSubmitDisabled = filterErrorMessage != null;
 
@@ -59,33 +62,34 @@ export function useBookingForm(): UseBookingFormReturn {
   };
 
   const handleSubmit = async () => {
-    if (!values.roomId) {
+    const current = getValues();
+
+    if (!current.roomId) {
       setSubmitError('회의실을 선택해주세요.');
       return;
     }
-    if (!values.start || !values.end) {
+    if (!current.start || !current.end) {
       setSubmitError('시작 시간과 종료 시간을 선택해주세요.');
       return;
     }
 
     try {
       const result = await createMutation.mutateAsync({
-        roomId: values.roomId,
-        date: values.date,
-        start: values.start,
-        end: values.end,
-        attendees: values.attendees,
-        equipment: values.equipment,
+        roomId: current.roomId,
+        date: current.date,
+        start: current.start,
+        end: current.end,
+        attendees: current.attendees,
+        equipment: current.equipment,
       });
 
-      if ('ok' in result && result.ok) {
+      if (result.ok) {
         toast.success('예약이 완료되었습니다!');
         navigate(ROUTES.HOME);
         return;
       }
 
-      const errResult = result as { message?: string };
-      setSubmitError(errResult.message ?? '예약에 실패했습니다.');
+      setSubmitError(result.message ?? '예약에 실패했습니다.');
     } catch (err: unknown) {
       const serverMessage = axios.isAxiosError(err)
         ? (err.response?.data as { message?: string } | undefined)?.message ?? '예약에 실패했습니다.'
@@ -96,11 +100,11 @@ export function useBookingForm(): UseBookingFormReturn {
 
   return {
     form,
-    values,
     filterErrorMessage,
     submitErrorMessage: submitError,
     isSubmitDisabled,
     isPendingBooking: createMutation.isPending,
+    selectedRoomId: roomId,
     handleRoomSelect,
     handleSubmit,
   };

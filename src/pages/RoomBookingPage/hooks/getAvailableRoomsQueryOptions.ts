@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getRooms, getReservations } from 'pages/remotes';
-import type { Room, Reservation, Equipment } from '../types';
+import type { Equipment } from '../types';
 import {
   filterByCapacity,
   filterByEquipment,
@@ -24,19 +24,16 @@ export function getAvailableRoomsQueryOptions(params: FilterParams) {
   return queryOptions({
     queryKey: ['availableRooms', date, { start, end, attendees, equipment, preferredFloor }] as const,
     queryFn: async () => {
-      const [rooms, reservations] = await Promise.all([
-        getRooms(),
-        getReservations(date),
-      ]);
+      const [rooms, reservations] = await Promise.all([getRooms(), getReservations(date)]);
       return { rooms, reservations };
     },
-    enabled: !!date,
-    select: (data) => {
+    enabled: Boolean(date) && Boolean(start) && Boolean(end),
+    select: data => {
       return data.rooms
-        .filter((room) => filterByCapacity(room, attendees))
-        .filter((room) => filterByEquipment(room, equipment))
-        .filter((room) => filterByFloor(room, preferredFloor))
-        .filter((room) => filterByTimeAvailability(room, data.reservations, { date, start, end }))
+        .filter(room => filterByCapacity(room, attendees))
+        .filter(room => filterByEquipment(room, equipment))
+        .filter(room => filterByFloor(room, preferredFloor))
+        .filter(room => filterByTimeAvailability(room, data.reservations, { date, start, end }))
         .sort(orderByFloorAndName);
     },
   });
