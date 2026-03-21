@@ -22,12 +22,10 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
         <Spacing size={6} />
         <input
           ref={ref}
-          type="text"
+          type="date"
           name={name}
           defaultValue={value}
           min={min}
-          placeholder="YYYY-MM-DD"
-          pattern="\d{4}-\d{2}-\d{2}"
           onChange={onChange}
           onBlur={onBlur}
           aria-label={label}
