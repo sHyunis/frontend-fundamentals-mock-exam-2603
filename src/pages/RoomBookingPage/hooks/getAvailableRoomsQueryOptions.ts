@@ -27,7 +27,6 @@ export function getAvailableRoomsQueryOptions(params: FilterParams) {
       const [rooms, reservations] = await Promise.all([getRooms(), getReservations(date)]);
       return { rooms, reservations };
     },
-    enabled: Boolean(date) && Boolean(start) && Boolean(end),
     select: data => {
       return data.rooms
         .filter(room => filterByCapacity(room, attendees))
