@@ -1,5 +1,5 @@
 import { css, keyframes } from '@emotion/react';
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -38,25 +38,42 @@ interface ToastProviderProps {
 
 export function ToastProvider({ children }: ToastProviderProps) {
   const [toasts, setToasts] = useState<ToastState[]>([]);
+  const timersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => {
+      timers.forEach(timer => clearTimeout(timer));
+      timers.clear();
+    };
+  }, []);
 
   const show = useCallback((options: ToastOptions) => {
     const id = Date.now();
     const duration = options.duration ?? 3000;
 
-    setToasts((prev) => [...prev, { ...options, id }]);
+    setToasts(prev => [...prev, { ...options, id }]);
 
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    const timer = setTimeout(() => {
+      setToasts(prev => prev.filter(toast => toast.id !== id));
+      timersRef.current.delete(id);
     }, duration);
+    timersRef.current.set(id, timer);
   }, []);
 
-  const success = useCallback((message: string) => {
-    show({ message, type: 'success' });
-  }, [show]);
+  const success = useCallback(
+    (message: string) => {
+      show({ message, type: 'success' });
+    },
+    [show]
+  );
 
-  const error = useCallback((message: string) => {
-    show({ message, type: 'error' });
-  }, [show]);
+  const error = useCallback(
+    (message: string) => {
+      show({ message, type: 'error' });
+    },
+    [show]
+  );
 
   return (
     <ToastContext.Provider value={{ show, success, error }}>
@@ -64,7 +81,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
       {toasts.length > 0 &&
         createPortal(
           <div css={containerStyle}>
-            {toasts.map((toast) => (
+            {toasts.map(toast => (
               <div key={toast.id} css={toastStyle(toast.type ?? 'info')}>
                 <Text typography="t6" fontWeight="medium" color={colors.white}>
                   {toast.message}

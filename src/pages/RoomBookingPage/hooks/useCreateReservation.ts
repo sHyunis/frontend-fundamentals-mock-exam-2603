@@ -18,6 +18,7 @@ export function useCreateReservation() {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['reservations', variables.date] });
       queryClient.invalidateQueries({ queryKey: ['myReservations'] });
+      queryClient.invalidateQueries({ queryKey: ['availableRooms'] });
     },
   });
 }

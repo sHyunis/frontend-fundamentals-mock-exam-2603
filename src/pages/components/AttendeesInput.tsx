@@ -1,4 +1,4 @@
-import { forwardRef, type ChangeEvent, type FocusEvent } from 'react';
+import { forwardRef, useRef, type ChangeEvent, type FocusEvent } from 'react';
 import { css } from '@emotion/react';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -12,20 +12,22 @@ interface AttendeesInputProps {
 
 export const AttendeesInput = forwardRef<HTMLInputElement, AttendeesInputProps>(
   ({ label, onChange, onBlur, name }, ref) => {
+    const idRef = useRef(`attendees-${name ?? label}`);
+    const inputId = idRef.current;
     return (
       <div css={containerStyle}>
-        <Text as="label" typography="t7" fontWeight="medium" color={colors.grey600}>
+        <Text as="label" htmlFor={inputId} typography="t7" fontWeight="medium" color={colors.grey600}>
           {label}
         </Text>
         <Spacing size={6} />
         <input
           ref={ref}
+          id={inputId}
           type="number"
           name={name}
           min={1}
           onChange={onChange}
           onBlur={onBlur}
-          aria-label={label}
           css={inputStyle}
         />
       </div>
