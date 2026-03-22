@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import type { BookingFormData, Equipment } from '../types';
+import type { Equipment } from 'pages/remotes';
 
 const VALID_EQUIPMENT: Equipment[] = ['tv', 'whiteboard', 'video', 'speaker'];
 
@@ -7,7 +7,16 @@ function isEquipment(value: string): value is Equipment {
   return (VALID_EQUIPMENT as string[]).includes(value);
 }
 
-export function parseSearchParams(searchParams: URLSearchParams): Omit<BookingFormData, 'roomId'> {
+export interface BookingParams {
+  date: string;
+  start: string;
+  end: string;
+  attendees: number;
+  equipment: Equipment[];
+  preferredFloor: number | null;
+}
+
+export function parseSearchParams(searchParams: URLSearchParams): BookingParams {
   return {
     date: searchParams.get('date') ?? dayjs().format('YYYY-MM-DD'),
     start: searchParams.get('start') ?? searchParams.get('startTime') ?? '',
@@ -18,7 +27,7 @@ export function parseSearchParams(searchParams: URLSearchParams): Omit<BookingFo
   };
 }
 
-export function buildSearchParams(data: Omit<BookingFormData, 'roomId'>): Record<string, string> {
+export function buildSearchParams(data: BookingParams): Record<string, string> {
   const params: Record<string, string> = {};
 
   if (data.date) {

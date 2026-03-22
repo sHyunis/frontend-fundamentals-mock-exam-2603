@@ -1,4 +1,4 @@
-import type { Equipment, Room, Reservation } from '../types';
+import type { Equipment, Room, Reservation } from 'pages/remotes';
 import { hasTimeConflict } from './time';
 
 export const filterByCapacity = (room: Room, attendees: number): boolean => {

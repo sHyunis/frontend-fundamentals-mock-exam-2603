@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getRooms, getReservations } from 'pages/remotes';
-import type { Equipment } from '../types';
+import type { Equipment } from 'pages/remotes';
 import {
   filterByCapacity,
   filterByEquipment,

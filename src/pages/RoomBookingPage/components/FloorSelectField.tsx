@@ -5,7 +5,7 @@ import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { FloorSelect } from '../../components/FloorSelect';
 import { getRoomsQueryOptions } from 'shared/queries/getRoomsQueryOptions';
-import type { Room } from '../types';
+import type { Room } from 'pages/remotes';
 
 interface FloorSelectFieldProps {
   value: number | null;

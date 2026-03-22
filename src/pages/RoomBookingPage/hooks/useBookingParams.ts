@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
-import { parseSearchParams } from '../utils/searchParams';
+import { parseSearchParams, type BookingParams } from '../utils/searchParams';
 
-export type BookingParams = ReturnType<typeof parseSearchParams>;
+export type { BookingParams };
 
 export function useBookingParams(): BookingParams {
   const [searchParams] = useSearchParams();
