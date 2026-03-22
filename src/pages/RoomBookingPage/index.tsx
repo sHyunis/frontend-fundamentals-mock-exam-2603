@@ -1,7 +1,6 @@
 import { css } from '@emotion/react';
 import { Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormProvider } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -16,13 +15,13 @@ export function RoomBookingPage() {
   const queryClient = useQueryClient();
 
   const {
-    form,
     filterErrorMessage,
     submitErrorMessage,
     isSubmitDisabled,
     isPendingBooking,
     selectedRoomId,
     handleRoomSelect,
+    handleFilterChange,
     handleSubmit,
   } = useBookingForm();
 
@@ -55,35 +54,33 @@ export function RoomBookingPage() {
 
       <Spacing size={24} />
 
-      <FormProvider {...form}>
-        <BookingFilterSection />
+      <BookingFilterSection onFilterChange={handleFilterChange} />
 
-        <Spacing size={24} />
-        <Border size={8} />
-        <Spacing size={24} />
+      <Spacing size={24} />
+      <Border size={8} />
+      <Spacing size={24} />
 
-        <section css={sectionStyle}>
-          {filterErrorMessage ? (
-            <div css={emptyStyle}>
-              <Text typography="t6" color={colors.grey500}>
-                {'예약 조건을 먼저 선택해 주세요.'}
-              </Text>
-            </div>
-          ) : (
-            <ErrorBoundary onReset={() => queryClient.resetQueries({ queryKey: ['availableRooms'] })}>
-              <Suspense fallback={<AvailableRoomList.Loading />}>
-                <AvailableRoomList selectedRoomId={selectedRoomId} onSelectRoom={handleRoomSelect} />
-              </Suspense>
-            </ErrorBoundary>
-          )}
+      <section css={sectionStyle}>
+        {filterErrorMessage ? (
+          <div css={emptyStyle}>
+            <Text typography="t6" color={colors.grey500}>
+              {'예약 조건을 먼저 선택해 주세요.'}
+            </Text>
+          </div>
+        ) : (
+          <ErrorBoundary onReset={() => queryClient.resetQueries({ queryKey: ['availableRooms'] })}>
+            <Suspense fallback={<AvailableRoomList.Loading />}>
+              <AvailableRoomList selectedRoomId={selectedRoomId} onSelectRoom={handleRoomSelect} />
+            </Suspense>
+          </ErrorBoundary>
+        )}
 
-          <Spacing size={16} />
+        <Spacing size={16} />
 
-          <Button display="full" onClick={handleSubmit} disabled={isSubmitDisabled || isPendingBooking}>
-            {isPendingBooking ? '예약 중...' : '확정'}
-          </Button>
-        </section>
-      </FormProvider>
+        <Button display="full" onClick={handleSubmit} disabled={isSubmitDisabled || isPendingBooking}>
+          {isPendingBooking ? '예약 중...' : '확정'}
+        </Button>
+      </section>
 
       <Spacing size={24} />
     </div>

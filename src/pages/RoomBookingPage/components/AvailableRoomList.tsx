@@ -1,22 +1,18 @@
 import { css } from '@emotion/react';
-import { useFormContext, useWatch } from 'react-hook-form';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Text, ListRow, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { getAvailableRoomsQueryOptions } from '../hooks/getAvailableRoomsQueryOptions';
-import type { BookingFormData } from '../types';
 import { getEquipmentLabels } from 'shared/utils/equipment';
+import { useBookingParams } from '../hooks/useBookingParams';
 
 interface AvailableRoomListProps {
   selectedRoomId: string | null;
   onSelectRoom: (roomId: string) => void;
 }
 
-const FILTER_FIELDS = ['date', 'start', 'end', 'attendees', 'equipment', 'preferredFloor'] as const;
-
 export function AvailableRoomList({ selectedRoomId, onSelectRoom }: AvailableRoomListProps) {
-  const { control } = useFormContext<BookingFormData>();
-  const [date, start, end, attendees, equipment, preferredFloor] = useWatch({ control, name: [...FILTER_FIELDS] });
+  const { date, start, end, attendees, equipment, preferredFloor } = useBookingParams();
 
   const { data: availableRooms } = useSuspenseQuery(
     getAvailableRoomsQueryOptions({ date, start, end, attendees, equipment, preferredFloor })

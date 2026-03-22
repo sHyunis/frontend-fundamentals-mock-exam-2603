@@ -1,19 +1,18 @@
 import { css } from '@emotion/react';
 import { useMemo } from 'react';
-import { useWatch, type Path, type PathValue } from 'react-hook-form';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { FloorSelect } from '../../components/FloorSelect';
 import { getRoomsQueryOptions } from 'shared/queries/getRoomsQueryOptions';
-import type { BookingFormData, Room } from '../types';
+import type { Room } from '../types';
 
 interface FloorSelectFieldProps {
-  onFilterChange: <K extends Path<BookingFormData>>(key: K, value: PathValue<BookingFormData, K>) => void;
+  value: number | null;
+  onChange: (value: number | null) => void;
 }
 
-export function FloorSelectField({ onFilterChange }: FloorSelectFieldProps) {
-  const preferredFloor = useWatch<BookingFormData, 'preferredFloor'>({ name: 'preferredFloor' });
+export function FloorSelectField({ value, onChange }: FloorSelectFieldProps) {
   const { data: rooms } = useSuspenseQuery(getRoomsQueryOptions());
 
   const floors = useMemo(() => {
@@ -24,11 +23,9 @@ export function FloorSelectField({ onFilterChange }: FloorSelectFieldProps) {
   return (
     <FloorSelect
       label="선호 층"
-      value={preferredFloor}
+      value={value}
       floors={floors}
-      onChange={value => {
-        onFilterChange('preferredFloor', value);
-      }}
+      onChange={onChange}
     />
   );
 }

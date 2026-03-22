@@ -5,15 +5,17 @@ import { colors } from '_tosslib/constants/colors';
 
 interface AttendeesInputProps {
   label: string;
+  value?: number;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: FocusEvent<HTMLInputElement>) => void;
   name?: string;
 }
 
 export const AttendeesInput = forwardRef<HTMLInputElement, AttendeesInputProps>(
-  ({ label, onChange, onBlur, name }, ref) => {
+  ({ label, value, onChange, onBlur, name }, ref) => {
     const idRef = useRef(`attendees-${name ?? label}`);
     const inputId = idRef.current;
+    const valueProps = value !== undefined ? { value } : {};
     return (
       <div css={containerStyle}>
         <Text as="label" htmlFor={inputId} typography="t7" fontWeight="medium" color={colors.grey600}>
@@ -26,6 +28,7 @@ export const AttendeesInput = forwardRef<HTMLInputElement, AttendeesInputProps>(
           type="number"
           name={name}
           min={1}
+          {...valueProps}
           onChange={onChange}
           onBlur={onBlur}
           css={inputStyle}

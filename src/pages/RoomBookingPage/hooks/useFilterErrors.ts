@@ -1,22 +1,18 @@
 import { useMemo } from 'react';
-import { useWatch, type Control } from 'react-hook-form';
 import { isValidTimeRange } from '../utils/time';
-import type { BookingFormData } from '../types';
 
 export interface FilterErrors {
   time: string | null;
   attendees: string | null;
 }
 
-interface UseFilterErrorsOptions {
-  control?: Control<BookingFormData>;
+interface UseFilterErrorsParams {
+  start: string;
+  end: string;
+  attendees: number;
 }
 
-export function useFilterErrors(options?: UseFilterErrorsOptions): FilterErrors {
-  const start = useWatch<BookingFormData, 'start'>({ name: 'start', control: options?.control });
-  const end = useWatch<BookingFormData, 'end'>({ name: 'end', control: options?.control });
-  const attendees = useWatch<BookingFormData, 'attendees'>({ name: 'attendees', control: options?.control });
-
+export function useFilterErrors({ start, end, attendees }: UseFilterErrorsParams): FilterErrors {
   const hasTimeInputs = start !== '' && end !== '';
 
   return useMemo((): FilterErrors => {

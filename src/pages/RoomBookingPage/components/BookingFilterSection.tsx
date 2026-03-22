@@ -1,6 +1,5 @@
 import { css } from '@emotion/react';
 import { Suspense } from 'react';
-import { useFormContext, Controller, type PathValue, type Path } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { Text, Spacing } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
@@ -11,28 +10,22 @@ import { AttendeesInput } from '../../components/AttendeesInput';
 import { EquipmentSelector } from './EquipmentSelector';
 import { FloorSelectField } from './FloorSelectField';
 import { START_TIME_OPTIONS, END_TIME_OPTIONS } from '../utils/time';
-import { useSearchParamsSync } from '../hooks/useSearchParamsSync';
+import { useBookingParams } from '../hooks/useBookingParams';
+import { useUpdateBookingParam } from '../hooks/useUpdateBookingParam';
 import { useFilterErrors } from '../hooks/useFilterErrors';
-import type { BookingFormData } from '../types';
 
-export function BookingFilterSection() {
-  const { register, control, setValue, getValues, clearErrors } = useFormContext<BookingFormData>();
-  const syncSearchParams = useSearchParamsSync();
-  const filterErrors = useFilterErrors();
+interface BookingFilterSectionProps {
+  onFilterChange: () => void;
+}
 
-  const handleFieldChange = () => {
-    setValue('roomId', null);
-    clearErrors('root');
-  };
+export function BookingFilterSection({ onFilterChange }: BookingFilterSectionProps) {
+  const params = useBookingParams();
+  const updateParam = useUpdateBookingParam();
+  const filterErrors = useFilterErrors({ start: params.start, end: params.end, attendees: params.attendees });
 
-  const syncCurrentParams = () => {
-    syncSearchParams(getValues());
-  };
-
-  const handleControllerChange = <K extends Path<BookingFormData>>(key: K, newValue: PathValue<BookingFormData, K>) => {
-    setValue(key, newValue);
-    handleFieldChange();
-    syncSearchParams({ ...getValues(), [key]: newValue });
+  const handleChange = (partial: Partial<typeof params>) => {
+    updateParam(partial);
+    onFilterChange();
   };
 
   return (
@@ -44,48 +37,24 @@ export function BookingFilterSection() {
 
       <DatePicker
         label="날짜"
-        {...register('date', {
-          onChange: () => {
-            handleFieldChange();
-            syncCurrentParams();
-          },
-        })}
+        value={params.date}
+        onChange={e => handleChange({ date: e.target.value })}
         min={dayjs().format('YYYY-MM-DD')}
       />
       <Spacing size={14} />
 
       <div css={rowStyle}>
-        <Controller
-          control={control}
-          name="start"
-          render={({ field }) => (
-            <TimeSelect
-              label="시작 시간"
-              options={START_TIME_OPTIONS}
-              value={field.value}
-              onChange={e => {
-                field.onChange(e.target.value);
-                handleFieldChange();
-                syncSearchParams({ ...getValues(), start: e.target.value });
-              }}
-            />
-          )}
+        <TimeSelect
+          label="시작 시간"
+          options={START_TIME_OPTIONS}
+          value={params.start}
+          onChange={e => handleChange({ start: e.target.value })}
         />
-        <Controller
-          control={control}
-          name="end"
-          render={({ field }) => (
-            <TimeSelect
-              label="종료 시간"
-              options={END_TIME_OPTIONS}
-              value={field.value}
-              onChange={e => {
-                field.onChange(e.target.value);
-                handleFieldChange();
-                syncSearchParams({ ...getValues(), end: e.target.value });
-              }}
-            />
-          )}
+        <TimeSelect
+          label="종료 시간"
+          options={END_TIME_OPTIONS}
+          value={params.end}
+          onChange={e => handleChange({ end: e.target.value })}
         />
       </div>
 
@@ -102,17 +71,15 @@ export function BookingFilterSection() {
       <div css={rowStyle}>
         <AttendeesInput
           label="참석 인원"
-          {...register('attendees', {
-            valueAsNumber: true,
-            onChange: () => {
-              handleFieldChange();
-              syncCurrentParams();
-            },
-          })}
+          value={params.attendees}
+          onChange={e => handleChange({ attendees: Number(e.target.value) || 1 })}
         />
         <ErrorBoundary fallback={<FloorSelectField.Error />}>
           <Suspense fallback={<FloorSelectField.Loading />}>
-            <FloorSelectField onFilterChange={handleControllerChange} />
+            <FloorSelectField
+              value={params.preferredFloor}
+              onChange={value => handleChange({ preferredFloor: value })}
+            />
           </Suspense>
         </ErrorBoundary>
       </div>
@@ -127,16 +94,10 @@ export function BookingFilterSection() {
       )}
       <Spacing size={14} />
 
-      <Controller
-        control={control}
-        name="equipment"
-        render={({ field }) => (
-          <EquipmentSelector
-            label="필요 장비"
-            value={field.value}
-            onChange={value => handleControllerChange('equipment', value)}
-          />
-        )}
+      <EquipmentSelector
+        label="필요 장비"
+        value={params.equipment}
+        onChange={value => handleChange({ equipment: value })}
       />
     </section>
   );
