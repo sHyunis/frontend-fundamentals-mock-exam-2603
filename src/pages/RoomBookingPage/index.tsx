@@ -15,9 +15,8 @@ export function RoomBookingPage() {
   const queryClient = useQueryClient();
 
   const {
-    filterErrorMessage,
-    submitErrorMessage,
-    isSubmitDisabled,
+    isFilterValid,
+    errorMessage,
     isPendingBooking,
     selectedRoomId,
     handleRoomSelect,
@@ -41,12 +40,12 @@ export function RoomBookingPage() {
       </div>
       <Top.Top03 css={headerStyle}>예약하기</Top.Top03>
 
-      {submitErrorMessage && (
+      {errorMessage && (
         <div css={errorContainerStyle}>
           <Spacing size={12} />
           <div css={errorBoxStyle}>
             <Text typography="t7" fontWeight="medium" color={colors.red500}>
-              {submitErrorMessage}
+              {errorMessage}
             </Text>
           </div>
         </div>
@@ -61,7 +60,7 @@ export function RoomBookingPage() {
       <Spacing size={24} />
 
       <section css={sectionStyle}>
-        {filterErrorMessage ? (
+        {!isFilterValid ? (
           <div css={emptyStyle}>
             <Text typography="t6" color={colors.grey500}>
               {'예약 조건을 먼저 선택해 주세요.'}
@@ -77,7 +76,7 @@ export function RoomBookingPage() {
 
         <Spacing size={16} />
 
-        <Button display="full" onClick={handleSubmit} disabled={isSubmitDisabled || isPendingBooking}>
+        <Button display="full" onClick={handleSubmit} disabled={!isFilterValid || isPendingBooking}>
           {isPendingBooking ? '예약 중...' : '확정'}
         </Button>
       </section>

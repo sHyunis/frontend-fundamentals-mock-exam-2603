@@ -8,9 +8,8 @@ import { useFilterErrors } from './useFilterErrors';
 import { useCreateReservation } from './useCreateReservation';
 
 export interface UseBookingFormReturn {
-  filterErrorMessage: string | null;
-  submitErrorMessage: string | null;
-  isSubmitDisabled: boolean;
+  isFilterValid: boolean;
+  errorMessage: string | null;
   isPendingBooking: boolean;
   selectedRoomId: string | null;
   handleRoomSelect: (roomId: string) => void;
@@ -25,33 +24,29 @@ export function useBookingForm(): UseBookingFormReturn {
   const createMutation = useCreateReservation();
 
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-  const [submitErrorMessage, setSubmitErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const filterErrors = useFilterErrors({ start: params.start, end: params.end, attendees: params.attendees });
   const hasEmptyTime = params.start === '' || params.end === '';
-
-  const filterErrorMessage =
-    filterErrors.time ?? filterErrors.attendees ?? (hasEmptyTime ? '시작 시간과 종료 시간을 선택해주세요.' : null);
-
-  const isSubmitDisabled = filterErrorMessage != null;
+  const isFilterValid = filterErrors.time === null && filterErrors.attendees === null && !hasEmptyTime;
 
   const handleRoomSelect = useCallback((roomId: string) => {
     setSelectedRoomId(roomId);
-    setSubmitErrorMessage(null);
+    setErrorMessage(null);
   }, []);
 
   const handleFilterChange = useCallback(() => {
     setSelectedRoomId(null);
-    setSubmitErrorMessage(null);
+    setErrorMessage(null);
   }, []);
 
   const handleSubmit = async () => {
     if (!selectedRoomId) {
-      setSubmitErrorMessage('회의실을 선택해주세요.');
+      setErrorMessage('회의실을 선택해주세요.');
       return;
     }
     if (!params.start || !params.end) {
-      setSubmitErrorMessage('시작 시간과 종료 시간을 선택해주세요.');
+      setErrorMessage('시작 시간과 종료 시간을 선택해주세요.');
       return;
     }
 
@@ -71,21 +66,20 @@ export function useBookingForm(): UseBookingFormReturn {
         return;
       }
 
-      setSubmitErrorMessage(result.message ?? '예약에 실패했습니다.');
+      setErrorMessage(result.message ?? '예약에 실패했습니다.');
       setSelectedRoomId(null);
     } catch (err: unknown) {
       const serverMessage = axios.isAxiosError(err)
         ? (err.response?.data as { message?: string } | undefined)?.message ?? '예약에 실패했습니다.'
         : '예약에 실패했습니다.';
-      setSubmitErrorMessage(serverMessage);
+      setErrorMessage(serverMessage);
       setSelectedRoomId(null);
     }
   };
 
   return {
-    filterErrorMessage,
-    submitErrorMessage,
-    isSubmitDisabled,
+    isFilterValid,
+    errorMessage,
     isPendingBooking: createMutation.isPending,
     selectedRoomId,
     handleRoomSelect,
